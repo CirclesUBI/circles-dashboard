@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
 import HealthViewerField from '~/components/HealthViewerField';
@@ -10,9 +11,7 @@ const HealthViewer = () => {
   const health = useSelector(state => state.health);
 
   return (
-    <div>
-      {health.isLoading ? 'Loading ... ' : ''}
-
+    <HealthViewerStyle>
       <HealthViewerService
         isActive={health.graph.isReachable}
         label="Graph Node"
@@ -22,7 +21,7 @@ const HealthViewer = () => {
         </HealthViewerField>
 
         <HealthViewerField label="Failed">
-          <StatusIndicator isActive={health.graph.isFailed} />
+          <StatusIndicator isActive={!health.graph.isFailed} />
         </HealthViewerField>
 
         <HealthViewerField label="Entity Count">
@@ -50,8 +49,14 @@ const HealthViewer = () => {
         isActive={health.app.isReachable}
         label="Client Website"
       />
-    </div>
+    </HealthViewerStyle>
   );
 };
+
+const HealthViewerStyle = styled.div`
+  display: flex;
+
+  justify-content: space-between;
+`;
 
 export default HealthViewer;

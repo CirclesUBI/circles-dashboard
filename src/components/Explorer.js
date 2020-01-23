@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { Graph } from 'react-d3-graph';
 import { useSelector } from 'react-redux';
 
@@ -85,11 +86,13 @@ const Explorer = () => {
   };
 
   const config = {
+    width: 1350,
+    height: 800,
     directed: true,
     nodeHighlightBehavior: true,
     node: {
       color: 'lightgreen',
-      size: 120,
+      size: 200,
       renderLabel: false,
       highlightStrokeColor: 'black',
     },
@@ -105,7 +108,7 @@ const Explorer = () => {
   };
 
   return (
-    <div>
+    <ExplorerStyle>
       <ExplorerDetail safeAddress={selectedNode} />
 
       <Graph
@@ -114,7 +117,7 @@ const Explorer = () => {
         id="trust-network"
         onClickNode={onClickNode}
       />
-    </div>
+    </ExplorerStyle>
   );
 };
 
@@ -138,15 +141,34 @@ const ExplorerDetail = props => {
   }
 
   return (
-    <div>
+    <ExplorerDetailStyle>
       <p>Safe: {props.safeAddress}</p>
       <p>Balance: {balance} Circles</p>
-    </div>
+    </ExplorerDetailStyle>
   );
 };
 
 ExplorerDetail.propTypes = {
   safeAddress: PropTypes.string,
 };
+
+const ExplorerStyle = styled.div`
+  position: relative;
+
+  background-color: #efefef;
+`;
+
+const ExplorerDetailStyle = styled.div`
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  background-color: #999;
+
+  p {
+    margin: 0;
+  }
+`;
 
 export default Explorer;
