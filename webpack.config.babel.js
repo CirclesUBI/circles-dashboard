@@ -20,12 +20,8 @@ const CONFIG_KEYS = [
   'USERNAME_SERVICE_EXTERNAL',
 ];
 
-const CONFIG_KEYS_OPTIONAL = ['SENTRY_DSN_URL'];
-
 const NODE_MODULES = 'node_modules';
-const PATH_ASSETS = './assets';
 const PATH_DIST = './build';
-const PATH_LOCALES = './locales';
 const PATH_SRC = './src';
 
 function getPath(filePath) {
@@ -43,18 +39,6 @@ const envData = CONFIG_KEYS.reduce((acc, key) => {
 
   return acc;
 }, {});
-
-CONFIG_KEYS_OPTIONAL.forEach(key => {
-  if (process.env[key]) {
-    envData[key] = JSON.stringify(process.env[key]);
-  }
-});
-
-const pkg = require('./package.json');
-const corePkg = require('./node_modules/@circles/core/package.json');
-
-envData.RELEASE_VERSION = `"${pkg.version}"`;
-envData.CORE_RELEASE_VERSION = `"${corePkg.version}"`;
 
 export default () => {
   const isDevelopment = process.env.NODE_ENV === 'development';
@@ -75,8 +59,6 @@ export default () => {
     resolve: {
       modules: [NODE_MODULES],
       alias: {
-        '%': getPath(PATH_ASSETS),
-        locales: getPath(PATH_LOCALES),
         '~': getPath(PATH_SRC),
       },
     },
@@ -134,7 +116,7 @@ export default () => {
           : {
               collapseWhitespace: true,
             },
-        favicon: getPath(`${PATH_ASSETS}/favicon.ico`),
+        favicon: getPath(`${PATH_SRC}/favicon.ico`),
         template: getPath(`${PATH_SRC}/index.html`),
       }),
       new webpack.DefinePlugin({
