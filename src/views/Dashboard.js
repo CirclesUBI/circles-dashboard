@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 
+import Explorer from '~/components/Explorer';
 import Footer from '~/components/Footer';
 import Header from '~/components/Header';
 import HealthViewer from '~/components/HealthViewer';
@@ -13,7 +14,7 @@ const Dashboard = () => {
       </Header>
 
       <View>
-        <h1>Hello, Circles!</h1>
+        <Explorer />
       </View>
 
       <Footer />

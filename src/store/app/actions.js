@@ -1,4 +1,5 @@
 import ActionTypes from '~/store/app/types';
+import { checkExplorerState } from '~/store/explorer/actions';
 import { checkHealthState } from '~/store/health/actions';
 import { getPublicAddress } from '~/services/wallet';
 
@@ -37,6 +38,9 @@ export function checkAppState() {
       return;
     }
 
-    await dispatch(checkHealthState());
+    await Promise.all([
+      dispatch(checkHealthState()),
+      dispatch(checkExplorerState()),
+    ]);
   };
 }
