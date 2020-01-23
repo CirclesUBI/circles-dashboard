@@ -1,4 +1,5 @@
 import ActionTypes from '~/store/app/types';
+import { checkHealthState } from '~/store/health/actions';
 import { getPublicAddress } from '~/services/wallet';
 
 export function initializeApp() {
@@ -25,5 +26,17 @@ export function initializeApp() {
 
       throw error;
     }
+  };
+}
+
+export function checkAppState() {
+  return async (dispatch, getState) => {
+    const { app } = getState();
+
+    if (!app.isReady || app.isError) {
+      return;
+    }
+
+    await dispatch(checkHealthState());
   };
 }
