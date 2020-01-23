@@ -11,6 +11,8 @@ const HealthViewer = () => {
 
   return (
     <div>
+      {health.isLoading ? 'Loading ... ' : ''}
+
       <HealthViewerService
         isActive={health.graph.isReachable}
         label="Graph Node"
