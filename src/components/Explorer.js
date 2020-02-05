@@ -28,6 +28,7 @@ const Explorer = () => {
         if (!foundDuplicate) {
           acc.push({
             id,
+            label: id.slice(0, 10),
           });
         }
       });
@@ -90,10 +91,17 @@ const Explorer = () => {
     height: 800,
     directed: true,
     nodeHighlightBehavior: true,
+    d3: {
+      alphaTarget: 0,
+      gravity: -1000,
+      linkLength: 220,
+      linkStrength: 0.1,
+    },
     node: {
       color: 'lightgreen',
-      size: 200,
-      renderLabel: false,
+      size: 300,
+      renderLabel: true,
+      labelProperty: 'label',
       highlightStrokeColor: 'black',
     },
     link: {
