@@ -1,11 +1,9 @@
 import ActionTypes from '~/store/explorer/types';
 import graphRequest from '~/services/graphql';
 import web3 from '~/services/web3';
-import { addEvents } from '~/services/events';
+import { setEvents } from '~/services/events';
 
-function addMilliseconds(time) {
-  return parseInt(`${time}000`, 10);
-}
+const PAGE_SIZE = 100;
 
 function convertAddress(address) {
   return web3.utils.toChecksumAddress(address);
@@ -23,76 +21,62 @@ export function checkExplorerState() {
       type: ActionTypes.EXPLORER_UPDATE,
     });
 
+    const connections = [];
+    let index = 0;
+
     try {
       const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs/name/${process.env.SUBGRAPH_NAME}`;
 
-      const filter = `
-        orderBy: time,
-        where: {
-          time_gt: ${explorer.updatedAt},
-          type: "TRUST",
-        }
-      `;
+      let isEmpty = false;
 
-      const query = `{
-        notifications(${filter}) {
-          id
-          transactionHash
-          safe {
+      while (!isEmpty) {
+        const filter = `
+          orderBy: id,
+          first: ${PAGE_SIZE},
+          skip: ${index * PAGE_SIZE},
+        `;
+
+        const query = `{
+          trusts(${filter}) {
             id
-          }
-          type
-          time
-          trust {
-            user
-            canSendTo
+            limit
             limitPercentage
+            userAddress
+            canSendToAddress
           }
-          transfer {
-            from
-            to
-            amount
-          }
-          ownership {
-            adds
-            removes
-          }
+        }`;
+
+        const { trusts } = await graphRequest(endpoint, query);
+
+        if (trusts.length === 0) {
+          isEmpty = true;
         }
-      }`;
 
-      const { notifications } = await graphRequest(endpoint, query);
+        trusts.forEach(connection => {
+          if (connection.userAddress === connection.canSendToAddress) {
+            return;
+          }
 
-      if (notifications.length === 0) {
-        return;
+          connections.push({
+            id: connection.id,
+            data: {
+              limitPercentage: connection.limitPercentage,
+              limit: connection.limit,
+              user: convertAddress(connection.userAddress),
+              canSendTo: convertAddress(connection.canSendToAddress),
+            },
+          });
+        }, []);
+
+        index += 1;
       }
 
-      const updatedAt = notifications[notifications.length - 1].time;
-
-      const events = notifications.reduce((acc, notification) => {
-        if (notification.trust.user === notification.trust.canSendTo) {
-          return acc;
-        }
-
-        acc.push({
-          id: notification.id,
-          timestamp: addMilliseconds(notification.time),
-          transactionHash: notification.transactionHash,
-          data: {
-            limitPercentage: notification.trust.limitPercentage,
-            user: convertAddress(notification.trust.user),
-            canSendTo: convertAddress(notification.trust.canSendTo),
-          },
-        });
-
-        return acc;
-      }, []);
-
-      addEvents(events);
+      setEvents(connections);
 
       dispatch({
         type: ActionTypes.EXPLORER_UPDATE_SUCCESS,
         meta: {
-          updatedAt,
+          updatedAt: Date.now(),
         },
       });
     } catch {

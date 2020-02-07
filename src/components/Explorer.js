@@ -49,6 +49,7 @@ const Explorer = () => {
         linksTable[key] = {
           source: data.user,
           target: data.canSendTo,
+          limit: data.limit,
           limitPercentage: data.limitPercentage,
         };
       }
@@ -56,14 +57,16 @@ const Explorer = () => {
 
     // Create all links for the graph
     const newLinks = Object.keys(linksTable).reduce((acc, key) => {
-      const { source, target, limitPercentage } = linksTable[key];
+      const { source, target, limit, limitPercentage } = linksTable[key];
+
+      const limitFormat = web3.utils.fromWei(limit, 'ether').split('.')[0];
 
       // Remove all links which have 0 trust limit
       if (limitPercentage !== '0') {
         acc.push({
           source,
           target,
-          label: limitPercentage,
+          label: `${limitFormat} (${limitPercentage}%)`,
         });
       }
 
