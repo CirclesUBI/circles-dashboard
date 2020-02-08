@@ -55,13 +55,13 @@
     "stylelint-custom-processor-loader": "^0.6.0",
     "stylelint-order": "^4.0.0",
     "stylelint-processor-styled-components": "^1.9.0",
-    "truffle": "^5.1.11",
+    "truffle": "^5.1.12",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.2"
+    "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@circles/core": "^0.8.2",
+    "@circles/core": "^0.8.6",
     "d3": "^5.15.0",
     "immutability-helper": "^3.0.1",
     "isomorphic-fetch": "^2.2.1",
@@ -74,7 +74,7 @@
     "redux-create-action-types": "^2.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^5.0.0",
+    "styled-components": "^5.0.1",
     "styled-normalize": "^8.0.7",
     "web3": "^1.2.6"
   }
