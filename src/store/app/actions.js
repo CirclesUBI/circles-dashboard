@@ -4,7 +4,7 @@ import { checkHealthState } from '~/store/health/actions';
 import { getPublicAddress } from '~/services/wallet';
 
 export function initializeApp() {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.APP_INITIALIZE,
     });

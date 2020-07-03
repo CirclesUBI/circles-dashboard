@@ -52,7 +52,7 @@ export function checkExplorerState() {
           isEmpty = true;
         }
 
-        trusts.forEach(connection => {
+        trusts.forEach((connection) => {
           if (connection.userAddress === connection.canSendToAddress) {
             return;
           }

@@ -8,7 +8,7 @@ import StatusIndicator from '~/components/StatusIndicator';
 import web3 from '~/services/web3';
 
 const HealthViewer = () => {
-  const health = useSelector(state => state.health);
+  const health = useSelector((state) => state.health);
 
   return (
     <HealthViewerStyle>

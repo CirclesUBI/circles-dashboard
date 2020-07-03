@@ -9,7 +9,7 @@ import web3 from '~/services/web3';
 import { getEvents } from '~/services/events';
 
 const Explorer = () => {
-  const explorer = useSelector(state => state.explorer);
+  const explorer = useSelector((state) => state.explorer);
 
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
@@ -20,8 +20,8 @@ const Explorer = () => {
 
     // Add all nodes, remove duplicates
     const newNodes = events.reduce((acc, { data }) => {
-      [data.canSendTo, data.user].forEach(id => {
-        const foundDuplicate = acc.find(accItem => {
+      [data.canSendTo, data.user].forEach((id) => {
+        const foundDuplicate = acc.find((accItem) => {
           return accItem.id === id;
         });
 
@@ -114,7 +114,7 @@ const Explorer = () => {
     },
   };
 
-  const onClickNode = id => {
+  const onClickNode = (id) => {
     setSelectedNode(id);
   };
 
@@ -132,7 +132,7 @@ const Explorer = () => {
   );
 };
 
-const ExplorerDetail = props => {
+const ExplorerDetail = (props) => {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {

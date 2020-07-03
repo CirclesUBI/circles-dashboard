@@ -20,13 +20,13 @@ async function requestCore(moduleName, method, options) {
 // Safe module
 
 const safe = {
-  getOwners: async safeAddress => {
+  getOwners: async (safeAddress) => {
     return await requestCore('safe', 'getOwners', {
       safeAddress,
     });
   },
 
-  getAddress: async ownerAddress => {
+  getAddress: async (ownerAddress) => {
     return await requestCore('safe', 'getAddress', {
       ownerAddress,
     });
@@ -36,7 +36,7 @@ const safe = {
 // User module
 
 const user = {
-  resolve: async addresses => {
+  resolve: async (addresses) => {
     return await requestCore('user', 'resolve', {
       addresses,
     });
@@ -46,7 +46,7 @@ const user = {
 // Trust module
 
 const trust = {
-  getNetwork: async safeAddress => {
+  getNetwork: async (safeAddress) => {
     return await requestCore('trust', 'getNetwork', {
       safeAddress,
     });
@@ -56,13 +56,13 @@ const trust = {
 // Token module
 
 const token = {
-  getBalance: async safeAddress => {
+  getBalance: async (safeAddress) => {
     return await requestCore('token', 'getBalance', {
       safeAddress,
     });
   },
 
-  getAddress: async safeAddress => {
+  getAddress: async (safeAddress) => {
     return await requestCore('token', 'getAddress', {
       safeAddress,
     });

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-const Header = props => {
+const Header = (props) => {
   return <HeaderStyle>{props.children}</HeaderStyle>;
 };
 

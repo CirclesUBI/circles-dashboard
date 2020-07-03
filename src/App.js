@@ -8,7 +8,7 @@ const CHECK_APP_FREQUENCY = 10 * 1000;
 
 const App = () => {
   const dispatch = useDispatch();
-  const app = useSelector(state => state.app);
+  const app = useSelector((state) => state.app);
 
   const onAppStart = () => {
     const initialize = async () => {

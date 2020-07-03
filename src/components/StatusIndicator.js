@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-const StatusIndicator = props => {
+const StatusIndicator = (props) => {
   return <StatusIndicatorStyle isActive={props.isActive} />;
 };
 
@@ -16,7 +16,7 @@ const StatusIndicatorStyle = styled.div`
 
   border: 2px solid black;
 
-  background-color: ${props => {
+  background-color: ${(props) => {
     return props.isActive ? 'green' : 'red';
   }};
 `;

@@ -8,7 +8,7 @@ import { createGlobalStyle } from 'styled-components';
 import App from '~/App';
 import store from '~/configureStore';
 
-const Root = props => (
+const Root = (props) => (
   <Provider store={props.store}>
     <GlobalStyle />
     <App />

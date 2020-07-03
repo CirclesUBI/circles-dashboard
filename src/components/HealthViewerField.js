@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-const HealthViewerField = props => {
+const HealthViewerField = (props) => {
   return (
     <HealthViewerFieldStyle>
       <strong>{props.label}</strong>
