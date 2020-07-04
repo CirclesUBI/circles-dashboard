@@ -1,56 +1,42 @@
+import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import normalize from 'styled-normalize';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createGlobalStyle } from 'styled-components';
+import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 
 import App from '~/App';
 import store from '~/configureStore';
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#ff9933',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#cc1e66',
+    },
+    contrastThreshold: 3,
+    tonalOffset: 0.2,
+  },
+});
+
 const Root = (props) => (
   <Provider store={props.store}>
-    <GlobalStyle />
-    <App />
+    <ThemeProvider theme={theme}>
+      <Router>
+        <CssBaseline />
+        <App />
+      </Router>
+    </ThemeProvider>
   </Provider>
 );
 
 Root.propTypes = {
   store: PropTypes.object.isRequired,
 };
-
-const GlobalStyle = createGlobalStyle`
-  ${normalize}
-  * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    &,
-    &::before,
-    &::after {
-      box-sizing: border-box;
-      text-rendering: optimizeLegibility;
-    }
-  }
-
-  h1 {
-    text-align: center;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5 {
-    margin: 0;
-  }
-
-  body {
-    font-family: Arial, sans-serif;
-  }
-
-  hr {
-    border: 0;
-    border-bottom: 2px solid black;
-  }
-`;
 
 ReactDOM.render(<Root store={store} />, document.getElementById('app'));

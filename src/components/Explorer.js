@@ -1,25 +1,45 @@
+import Fab from '@material-ui/core/Fab';
+import ForceGraph2D from 'react-force-graph-2d';
+import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Graph } from 'react-d3-graph';
-import { useSelector } from 'react-redux';
+import React, { useMemo, useEffect, useState } from 'react';
+import SyncIcon from '@material-ui/icons/Sync';
+import clsx from 'clsx';
+import { checkExplorerState } from '~/store/explorer/actions';
+import { useSelector, useDispatch } from 'react-redux';
 
-import core from '~/services/core';
+import useStyles from '~/styles';
 import web3 from '~/services/web3';
 import { getEvents } from '~/services/events';
 
-const Explorer = () => {
+const Explorer = (props) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
   const explorer = useSelector((state) => state.explorer);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const [nodes, setNodes] = useState([]);
-  const [links, setLinks] = useState([]);
-  const [selectedNode, setSelectedNode] = useState('');
+  useEffect(() => {
+    dispatch(checkExplorerState());
+  }, []);
+
+  const handleSync = () => {
+    dispatch(checkExplorerState());
+  };
+
+  const handleFullscreenToggle = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const handleNodeClick = (node) => {
+    props.onSafeSelected(node.id);
+  };
 
   function updateGraph() {
     const events = getEvents();
 
     // Add all nodes, remove duplicates
-    const newNodes = events.reduce((acc, { data }) => {
+    const nodes = events.reduce((acc, { data }) => {
       [data.canSendTo, data.user].forEach((id) => {
         const foundDuplicate = acc.find((accItem) => {
           return accItem.id === id;
@@ -28,7 +48,7 @@ const Explorer = () => {
         if (!foundDuplicate) {
           acc.push({
             id,
-            label: id.slice(0, 10),
+            label: id,
           });
         }
       });
@@ -56,130 +76,71 @@ const Explorer = () => {
     });
 
     // Create all links for the graph
-    const newLinks = Object.keys(linksTable).reduce((acc, key) => {
+    const links = Object.keys(linksTable).reduce((acc, key) => {
       const { source, target, limit, limitPercentage } = linksTable[key];
-
       const limitFormat = web3.utils.fromWei(limit, 'ether').split('.')[0];
 
-      // Remove all links which have 0 trust limit
+      // Remove all edges which have 0 trust limit
       if (limitPercentage !== '0') {
         acc.push({
           source,
           target,
-          label: `${limitFormat} (${limitPercentage}%)`,
+          label: `${limitFormat} Circles (${limitPercentage}%)`,
         });
       }
 
       return acc;
     }, []);
 
-    // Update graph data
-    setNodes(newNodes);
-    setLinks(newLinks);
-  }
-
-  useEffect(updateGraph, [explorer.updatedAt]);
-
-  if (nodes.length === 0) {
-    return null;
-  }
-
-  const data = {
-    nodes,
-    links,
-  };
-
-  const config = {
-    width: 1350,
-    height: 800,
-    directed: true,
-    nodeHighlightBehavior: true,
-    d3: {
-      alphaTarget: 0,
-      gravity: -1000,
-      linkLength: 220,
-      linkStrength: 0.1,
-    },
-    node: {
-      color: 'lightgreen',
-      size: 300,
-      renderLabel: true,
-      labelProperty: 'label',
-      highlightStrokeColor: 'black',
-    },
-    link: {
-      highlightColor: 'lightblue',
-      renderLabel: true,
-      type: 'CURVE_SMOOTH',
-    },
-  };
-
-  const onClickNode = (id) => {
-    setSelectedNode(id);
-  };
-
-  return (
-    <ExplorerStyle>
-      <ExplorerDetail safeAddress={selectedNode} />
-
-      <Graph
-        config={config}
-        data={data}
-        id="trust-network"
-        onClickNode={onClickNode}
-      />
-    </ExplorerStyle>
-  );
-};
-
-const ExplorerDetail = (props) => {
-  const [balance, setBalance] = useState(0);
-
-  useEffect(() => {
-    const updateDetails = async () => {
-      const currentBalance = await core.token.getBalance(props.safeAddress);
-      setBalance(web3.utils.fromWei(currentBalance));
+    return {
+      nodes,
+      links,
     };
+  }
 
-    if (props.safeAddress) {
-      updateDetails();
-      setBalance(0);
-    }
-  }, [props.safeAddress]);
+  const data = useMemo(updateGraph, [explorer.updatedAt]);
 
-  if (!props.safeAddress) {
+  if (data.nodes.length === 0) {
     return null;
   }
 
   return (
-    <ExplorerDetailStyle>
-      <p>Safe: {props.safeAddress}</p>
-      <p>Balance: {balance} Circles</p>
-    </ExplorerDetailStyle>
+    <div
+      className={clsx(
+        classes.explorer,
+        isFullscreen && classes.explorerFullscreen,
+      )}
+    >
+      <div className={classes.explorerBar}>
+        <Fab color="secondary" size="small" onClick={handleFullscreenToggle}>
+          {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+        </Fab>
+
+        <Fab color="secondary" size="small" onClick={handleSync}>
+          <SyncIcon />
+        </Fab>
+      </div>
+
+      <ForceGraph2D
+        graphData={data}
+        linkDirectionalArrowLength={5}
+        linkDirectionalArrowRelPos={1}
+        linkLabel="label"
+        linkOpacity={1}
+        nodeColor={(node) =>
+          node.id === props.selectedSafeAddress ? 'green' : 'red'
+        }
+        nodeLabel="label"
+        showNavInfo={false}
+        onNodeClick={handleNodeClick}
+      />
+    </div>
   );
 };
 
-ExplorerDetail.propTypes = {
-  safeAddress: PropTypes.string,
+Explorer.propTypes = {
+  onSafeSelected: PropTypes.func.isRequired,
+  selectedSafeAddress: PropTypes.string,
 };
-
-const ExplorerStyle = styled.div`
-  position: relative;
-
-  background-color: #efefef;
-`;
-
-const ExplorerDetailStyle = styled.div`
-  position: absolute;
-
-  top: 0;
-  right: 0;
-
-  background-color: #999;
-
-  p {
-    margin: 0;
-  }
-`;
 
 export default Explorer;

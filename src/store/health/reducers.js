@@ -4,6 +4,7 @@ import ActionTypes from '~/store/health/types';
 
 const initialServiceState = {
   isReachable: false,
+  isReady: false,
 };
 
 const initialState = {
@@ -41,6 +42,9 @@ const healthReducer = (state = initialState, action) => {
             {},
             state[action.meta.serviceName],
             action.meta.state,
+            {
+              isReady: true,
+            },
           ),
         },
       });
