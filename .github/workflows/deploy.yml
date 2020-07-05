@@ -44,6 +44,6 @@ jobs:
           RELAY_SERVICE_EXTERNAL: ${{ secrets.RELAY_SERVICE_EXTERNAL }}
           SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
           SAFE_FUNDER_ADDRESS: ${{ secrets.SAFE_FUNDER_ADDRESS }}
-          SUBGRAPH_NAME: ${{ secrets.SUBGRAPH_NAME }
+          SUBGRAPH_NAME: ${{ secrets.SUBGRAPH_NAME }}
           USERNAME_SERVICE_EXTERNAL: ${{ secrets.USERNAME_SERVICE_EXTERNAL }}
           publish_dir: ./build
