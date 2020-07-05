@@ -8,10 +8,10 @@ export default async function graphRequest(endpoint, query) {
       query: query.replace(/\s\s+/g, ' '),
     }),
   })
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
-    .then(response => {
+    .then((response) => {
       return response.data;
     });
 }

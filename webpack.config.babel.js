@@ -67,11 +67,7 @@ export default () => {
         {
           test: /\.js$/,
           exclude,
-          use: [
-            'babel-loader',
-            'eslint-loader',
-            'stylelint-custom-processor-loader',
-          ],
+          use: ['babel-loader', 'eslint-loader'],
         },
         {
           test: /\.css$/,

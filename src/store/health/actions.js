@@ -6,7 +6,7 @@ import web3 from '~/services/web3';
 function checkAppHealth() {
   const endpoint = process.env.BASE_PATH;
 
-  return async dispatch => {
+  return async (dispatch) => {
     const isReachable = await isServiceReachable(endpoint);
 
     dispatch({
@@ -24,7 +24,7 @@ function checkAppHealth() {
 function checkGraphHealth() {
   const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs`;
 
-  return async dispatch => {
+  return async (dispatch) => {
     // Get status from the current subgraph
     const query = `{
       subgraphs {
@@ -82,7 +82,7 @@ function checkGraphHealth() {
 function checkRelayHealth() {
   const endpoint = process.env.RELAY_SERVICE_EXTERNAL;
 
-  return async dispatch => {
+  return async (dispatch) => {
     const isReachable = await isServiceReachable(endpoint);
 
     dispatch({
@@ -118,13 +118,29 @@ function checkRelayHealth() {
 function checkApiHealth() {
   const endpoint = `${process.env.USERNAME_SERVICE_EXTERNAL}/api`;
 
-  return async dispatch => {
+  return async (dispatch) => {
     const isReachable = await isServiceReachable(endpoint);
 
     dispatch({
       type: ActionTypes.HEALTH_UPDATE_SERVICE,
       meta: {
         serviceName: 'api',
+        state: {
+          isReachable,
+        },
+      },
+    });
+  };
+}
+
+function checkEthereumNodeHealth() {
+  return async (dispatch) => {
+    const isReachable = await web3.eth.net.isListening();
+
+    dispatch({
+      type: ActionTypes.HEALTH_UPDATE_SERVICE,
+      meta: {
+        serviceName: 'ethereum',
         state: {
           isReachable,
         },
@@ -146,10 +162,11 @@ export function checkHealthState() {
     });
 
     await Promise.all([
+      dispatch(checkApiHealth()),
       dispatch(checkAppHealth()),
+      dispatch(checkEthereumNodeHealth()),
       dispatch(checkGraphHealth()),
       dispatch(checkRelayHealth()),
-      dispatch(checkApiHealth()),
     ]);
 
     dispatch({

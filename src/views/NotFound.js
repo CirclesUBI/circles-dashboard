@@ -1,14 +1,11 @@
-import React, { Fragment } from 'react';
-
-import View from '~/components/View';
+import React from 'react';
+import Typography from '@material-ui/core/Typography';
 
 const NotFound = () => {
   return (
-    <Fragment>
-      <View>
-        <h1>Not Found</h1>
-      </View>
-    </Fragment>
+    <Typography color="primary" component="h2" gutterBottom variant="h6">
+      Not found
+    </Typography>
   );
 };
 

@@ -11,7 +11,7 @@ const explorerReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.EXPLORER_UPDATE:
       return update(state, {
-        isLoading: { $set: false },
+        isLoading: { $set: true },
       });
     case ActionTypes.EXPLORER_UPDATE_SUCCESS:
       return update(state, {

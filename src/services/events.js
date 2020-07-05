@@ -1,7 +1,7 @@
 let events = [];
 
 export function findEvent(id) {
-  return events.find(item => {
+  return events.find((item) => {
     return item.id === id;
   });
 }
