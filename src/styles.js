@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  accordionDetails: {
+    display: 'block',
+  },
   listItem: {
     color: theme.palette.text.secondary,
   },

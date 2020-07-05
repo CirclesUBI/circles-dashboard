@@ -14,7 +14,7 @@ import useStyles from '~/styles';
 
 const Network = () => {
   const classes = useStyles();
-  const [selectedSafeAddress, setSelectedSafeAddress] = useState(false);
+  const [selectedSafeAddress, setSelectedSafeAddress] = useState(undefined);
 
   const handleSafeSelected = (safeAddress) => {
     setSelectedSafeAddress(safeAddress);
@@ -39,11 +39,24 @@ const Network = () => {
             </Typography>
           </AccordionSummary>
 
-          <AccordionDetails>
-            <SafeSearch
-              selectedSafeAddress={selectedSafeAddress}
-              onSafeSelected={handleSafeSelected}
-            />
+          <AccordionDetails className={classes.accordionDetails}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography>
+                  Search for usernames by entering a query in the input below or
+                  directly enter a public address and resolve its connected
+                  username. After searching you can click on a result to show
+                  the node in the graph.
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <SafeSearch
+                  selectedSafeAddress={selectedSafeAddress}
+                  onSafeSelected={handleSafeSelected}
+                />
+              </Grid>
+            </Grid>
           </AccordionDetails>
         </Accordion>
 
@@ -55,7 +68,18 @@ const Network = () => {
           </AccordionSummary>
 
           <AccordionDetails>
-            <SafeInspector selectedSafeAddress={selectedSafeAddress} />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography>
+                  Select a node by clicking on it in the network or search
+                  results.
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <SafeInspector selectedSafeAddress={selectedSafeAddress} />
+              </Grid>
+            </Grid>
           </AccordionDetails>
         </Accordion>
 
@@ -66,7 +90,20 @@ const Network = () => {
             </Typography>
           </AccordionSummary>
 
-          <AccordionDetails></AccordionDetails>
+          <AccordionDetails>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography>
+                  Search for usernames by entering a query in the input below or
+                  directly enter a public address and resolve its connected
+                  username. After searching you can click on a result to show
+                  the node in the graph.
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}></Grid>
+            </Grid>
+          </AccordionDetails>
         </Accordion>
       </Grid>
     </Grid>

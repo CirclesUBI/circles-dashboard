@@ -22,6 +22,13 @@ const theme = createMuiTheme({
     contrastThreshold: 3,
     tonalOffset: 0.2,
   },
+  overrides: {
+    MuiChip: {
+      root: {
+        maxWidth: '100%',
+      },
+    },
+  },
 });
 
 const Root = (props) => (

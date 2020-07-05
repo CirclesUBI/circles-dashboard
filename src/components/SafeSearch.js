@@ -1,40 +1,54 @@
-import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import { useDebouncedCallback } from 'use-debounce';
 
-import web3 from '~/services/web3';
 import core from '~/services/core';
-import useStyles from '~/styles';
+import resolveSafeAddress from '~/utils/resolveUsers';
+import web3 from '~/services/web3';
+
+const SEARCH_DEBOUNCE = 500;
+const MAX_RESULTS = 5;
 
 const SafeSearch = (props) => {
-  const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isNoResults, setIsNoResults] = useState(false);
-  const classes = useStyles();
+  const [isQueryEmpty, setIsQueryEmpty] = useState(true);
+  const [results, setResults] = useState([]);
+
+  const [debouncedSearch, cancelSearch] = useDebouncedCallback(
+    async (query) => {
+      const response = web3.utils.isAddress(query)
+        ? await resolveSafeAddress(query)
+        : await core.user.search(query);
+
+      setResults(response.data.slice(0, MAX_RESULTS));
+      setIsLoading(false);
+    },
+    SEARCH_DEBOUNCE,
+  );
 
   const handleInput = async (event) => {
-    const { value } = event.target;
+    const { value: query } = event.target;
+    const isEmpty = query.length === 0;
 
-    if (value.length === 0) {
-      setResults([]);
-      setIsNoResults(false);
-    } else if (web3.utils.isAddress(value)) {
-      props.onSafeSelected(web3.utils.toChecksumAddress(value));
-      setResults([]);
-      setIsNoResults(false);
-    } else {
-      setIsLoading(true);
-      const response = await core.user.search(event.target.value);
-      setResults(response.data.slice(0, 5));
-      setIsNoResults(response.data.length === 0);
+    setResults([]);
+    setIsQueryEmpty(isEmpty);
+    cancelSearch();
+
+    if (isEmpty) {
+      setIsLoading(false);
+      return;
     }
 
-    setIsLoading(false);
+    setIsLoading(true);
+    debouncedSearch(query);
   };
 
   const handleSelect = (safeAddress) => {
@@ -42,24 +56,34 @@ const SafeSearch = (props) => {
   };
 
   return (
-    <Box>
-      <div>
-        <form autoComplete="off" className={classes.root} noValidate>
-          <TextField label="Enter username or address" onChange={handleInput} />
-        </form>
-      </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <TextField label="Username or address" onChange={handleInput} />
+      </Grid>
 
-      {isLoading && <CircularProgress />}
-      {isNoResults && <p>No results</p>}
+      {isLoading || results.length === 0 ? (
+        <Grid item xs={12}>
+          {isLoading && <CircularProgress />}
+          {!isLoading && results.length === 0 && !isQueryEmpty && (
+            <Typography>No results found</Typography>
+          )}
+        </Grid>
+      ) : null}
 
-      <List>
-        <SafeSearchResults
-          results={results}
-          selectedSafeAddress={props.selectedSafeAddress}
-          onSelect={handleSelect}
-        />
-      </List>
-    </Box>
+      {!isLoading && results.length > 0 && !isQueryEmpty ? (
+        <Grid item xs={12}>
+          <List>
+            <ListSubheader>Results</ListSubheader>
+
+            <SafeSearchResults
+              results={results}
+              selectedSafeAddress={props.selectedSafeAddress}
+              onSelect={handleSelect}
+            />
+          </List>
+        </Grid>
+      ) : null}
+    </Grid>
   );
 };
 
@@ -75,7 +99,9 @@ const SafeSearchResults = (props) => {
         selected={result.safeAddress === props.selectedSafeAddress}
         onClick={handleClick}
       >
-        <ListItemText primary={result.username} />
+        <ListItemText
+          primary={result.username || `${result.safeAddress.slice(0, 16)} ...`}
+        />
       </ListItem>
     );
   });
