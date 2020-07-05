@@ -1,0 +1,49 @@
+name: Deploy website via Github Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '11.x'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build page
+        run: npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          BASE_PATH: ${{ secrets.BASE_PATH }}
+          ETHEREUM_NODE_WS: ${{ secrets.ETHEREUM_NODE_WS }}
+          GRAPH_NODE_EXTERNAL: ${{ secrets.GRAPH_NODE_EXTERNAL }}
+          HUB_ADDRESS: ${{ secrets.HUB_ADDRESS }}
+          PROXY_FACTORY_ADDRESS: ${{ secrets.PROXY_FACTORY_ADDRESS }}
+          RELAY_SERVICE_EXTERNAL: ${{ secrets.RELAY_SERVICE_EXTERNAL }}
+          SAFE_ADDRESS: ${{ secrets.SAFE_ADDRESS }}
+          SAFE_FUNDER_ADDRESS: ${{ secrets.SAFE_FUNDER_ADDRESS }}
+          SUBGRAPH_NAME: ${{ secrets.SUBGRAPH_NAME }
+          USERNAME_SERVICE_EXTERNAL: ${{ secrets.USERNAME_SERVICE_EXTERNAL }}
+          publish_dir: ./build
