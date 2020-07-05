@@ -32,7 +32,7 @@ const SafeInspector = ({ selectedSafeAddress }) => {
           username: user.data.length > 0 ? user.data[0].username : null,
         });
       } catch (error) {
-        console.error(error);
+        console.error(error); // eslint-disable-line no-console
         setDetails(null);
       }
 
