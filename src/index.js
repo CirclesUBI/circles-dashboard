@@ -9,15 +9,16 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 import App from '~/App';
 import store from '~/configureStore';
+import { colors } from '~/styles';
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#ff9933',
+      main: colors.primary,
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#cc1e66',
+      main: colors.secondary,
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,

@@ -73,6 +73,15 @@ const token = {
       safeAddress,
     });
   },
+
+  calculateTransfer: async (from, to, value, networkHops) => {
+    return await requestCore('token', 'calculateTransfer', {
+      from,
+      to,
+      value,
+      networkHops,
+    });
+  },
 };
 
 // Activity module

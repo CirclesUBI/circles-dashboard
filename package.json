@@ -66,6 +66,7 @@
     "react-force-graph-2d": "^1.16.3",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
+    "react-sizeme": "^2.6.12",
     "redux": "^4.0.5",
     "redux-create-action-types": "^2.1.0",
     "redux-logger": "^3.0.6",

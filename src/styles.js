@@ -2,6 +2,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const DRAWER_WIDTH = 240;
 
+export const colors = {
+  primary: '#ff9933',
+  secondary: '#cc1e66',
+  alternate: '#47cccb',
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -96,24 +102,31 @@ const useStyles = makeStyles((theme) => ({
   },
   explorer: {
     position: 'relative',
+    height: '800px',
   },
   explorerFullscreen: {
     position: 'fixed',
+    height: '100%',
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
-    zIndex: 50000,
+    zIndex: 1400,
     backgroundColor: '#fff',
   },
   explorerBar: {
     padding: theme.spacing(2),
     position: 'absolute',
     top: 0,
+    right: 0,
     left: 0,
-    zIndex: 100000,
+    zIndex: 500,
+    pointerEvents: 'none',
+  },
+  explorerBarContent: {
     '& > *': {
       margin: theme.spacing(0.5),
+      pointerEvents: 'all',
     },
   },
 }));

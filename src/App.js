@@ -35,6 +35,8 @@ import logo from '~/assets/logo.png';
 import useStyles from '~/styles';
 import { initializeApp, checkAppState } from '~/store/app/actions';
 
+import pkg from '../package.json';
+
 const CHECK_APP_FREQUENCY = 10 * 1000;
 
 const views = [
@@ -158,9 +160,14 @@ const App = () => {
 
           <Box pt={4}>
             <Typography align="center" color="textSecondary" variant="body2">
-              <Link color="inherit" href="https://joincircles.net/">
-                Go to Circles website
+              <Link
+                color="inherit"
+                href="https://joincircles.net/"
+                target="_blank"
+              >
+                Circles
               </Link>
+              {' - '}v{pkg.version}
             </Typography>
           </Box>
         </Container>

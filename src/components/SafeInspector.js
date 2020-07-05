@@ -7,6 +7,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import PaymentIcon from '@material-ui/icons/Payment';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import core from '~/services/core';
 import resolveSafeAddress from '~/utils/resolveUsers';
@@ -63,34 +64,32 @@ const SafeInspector = ({ selectedSafeAddress }) => {
 
   return (
     <div className={classes.chipGroup}>
-      <Chip
-        color="primary"
-        icon={<AdjustIcon />}
-        label={selectedSafeAddress}
-        title="Public address"
-      />
+      <Tooltip arrow title="Public address">
+        <Chip
+          color="secondary"
+          icon={<AdjustIcon />}
+          label={selectedSafeAddress}
+        />
+      </Tooltip>
 
       {details.username ? (
-        <Chip
-          icon={<AccountCircleIcon />}
-          label={details.username}
-          title="Username"
-        />
+        <Tooltip arrow title="Username">
+          <Chip icon={<AccountCircleIcon />} label={details.username} />
+        </Tooltip>
       ) : null}
 
-      <Chip
-        icon={<MoneyIcon />}
-        label={
-          details.tokenAddress ? details.tokenAddress : 'No Token available'
-        }
-        title="Token address"
-      />
+      <Tooltip arrow title="Token address">
+        <Chip
+          icon={<MoneyIcon />}
+          label={
+            details.tokenAddress ? details.tokenAddress : 'No Token available'
+          }
+        />
+      </Tooltip>
 
-      <Chip
-        icon={<PaymentIcon />}
-        label={details.balance}
-        title="Total balance of Circles"
-      />
+      <Tooltip arrow title="Token balance">
+        <Chip icon={<PaymentIcon />} label={details.balance} />
+      </Tooltip>
     </div>
   );
 };

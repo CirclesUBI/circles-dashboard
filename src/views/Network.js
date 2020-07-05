@@ -10,14 +10,24 @@ import Typography from '@material-ui/core/Typography';
 import Explorer from '~/components/Explorer';
 import SafeInspector from '~/components/SafeInspector';
 import SafeSearch from '~/components/SafeSearch';
+import TransferTool from '~/components/TransferTool';
 import useStyles from '~/styles';
 
 const Network = () => {
   const classes = useStyles();
-  const [selectedSafeAddress, setSelectedSafeAddress] = useState(undefined);
+  const [selectedSafeAddress, setSelectedSafeAddress] = useState(null);
+  const [selectedTransfer, setSelectedTransfer] = useState(null);
 
   const handleSafeSelected = (safeAddress) => {
     setSelectedSafeAddress(safeAddress);
+  };
+
+  const handleTransferPath = (transfer) => {
+    setSelectedTransfer(transfer);
+  };
+
+  const handleTransferReset = () => {
+    setSelectedTransfer(null);
   };
 
   return (
@@ -26,7 +36,9 @@ const Network = () => {
         <Paper className={classes.paperNetwork}>
           <Explorer
             selectedSafeAddress={selectedSafeAddress}
+            selectedTransfer={selectedTransfer}
             onSafeSelected={handleSafeSelected}
+            onTransferReset={handleTransferReset}
           />
         </Paper>
       </Grid>
@@ -94,14 +106,14 @@ const Network = () => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography>
-                  Search for usernames by entering a query in the input below or
-                  directly enter a public address and resolve its connected
-                  username. After searching you can click on a result to show
-                  the node in the graph.
+                  Test transitive transactions in the network by visualizing a
+                  potential path between two nodes.
                 </Typography>
               </Grid>
 
-              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                <TransferTool onPathFound={handleTransferPath} />
+              </Grid>
             </Grid>
           </AccordionDetails>
         </Accordion>
