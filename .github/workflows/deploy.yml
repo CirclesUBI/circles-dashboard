@@ -34,8 +34,7 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
           BASE_PATH: ${{ secrets.BASE_PATH }}
           ETHEREUM_NODE_WS: ${{ secrets.ETHEREUM_NODE_WS }}
           GRAPH_NODE_EXTERNAL: ${{ secrets.GRAPH_NODE_EXTERNAL }}
@@ -46,4 +45,6 @@ jobs:
           SAFE_FUNDER_ADDRESS: ${{ secrets.SAFE_FUNDER_ADDRESS }}
           SUBGRAPH_NAME: ${{ secrets.SUBGRAPH_NAME }}
           USERNAME_SERVICE_EXTERNAL: ${{ secrets.USERNAME_SERVICE_EXTERNAL }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
