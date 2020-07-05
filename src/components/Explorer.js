@@ -1,6 +1,7 @@
 import Box from '@material-ui/core/Box';
 import CenterFocusStrongIcon from '@material-ui/icons/CenterFocusStrong';
 import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Fab from '@material-ui/core/Fab';
 import ForceGraph2D from 'react-force-graph-2d';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
@@ -25,8 +26,7 @@ import useStyles, { colors } from '~/styles';
 import web3 from '~/services/web3';
 import { getEvents } from '~/services/events';
 
-const NODE_REL_SIZE = 8;
-const NODE_DISTANCE = 50;
+const NODE_REL_SIZE = 6;
 const RECENTER_DURATION_MS = 500;
 
 const nodesCache = {};
@@ -44,17 +44,16 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
-    window.setTimeout(() => {
-      ref.current.d3Force('link').distance(() => NODE_DISTANCE);
-    });
-
     handleSync();
   }, []);
 
   useEffect(() => {
     if (selectedSafeAddress && ref.current) {
       const node = nodesCache[selectedSafeAddress];
-      ref.current.centerAt(node.x, node.y, RECENTER_DURATION_MS);
+
+      if (node) {
+        ref.current.centerAt(node.x, node.y, RECENTER_DURATION_MS);
+      }
     }
   }, [selectedSafeAddress]);
 
@@ -357,6 +356,19 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
       <SizeMe
         monitorHeight
         render={({ size }) => {
+          if (explorer.isLoading) {
+            return (
+              <Box
+                alignItems="center"
+                display="flex"
+                justifyContent="center"
+                style={{ height: '100%' }}
+              >
+                <CircularProgress />
+              </Box>
+            );
+          }
+
           return (
             <ForceGraph2D
               graphData={data}

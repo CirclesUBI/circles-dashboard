@@ -1,11 +1,20 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+
+import AnalysisGeneral from '~/components/AnalysisGeneral';
+import AnalysisVelocity from '~/components/AnalysisVelocity';
 
 const Statistics = () => {
   return (
-    <Typography color="primary" component="h2" gutterBottom variant="h6">
-      To be implemented ...
-    </Typography>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <AnalysisGeneral />
+      </Grid>
+
+      <Grid item xs={12}>
+        <AnalysisVelocity />
+      </Grid>
+    </Grid>
   );
 };
 

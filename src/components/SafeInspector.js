@@ -1,5 +1,6 @@
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AdjustIcon from '@material-ui/icons/Adjust';
+import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MoneyIcon from '@material-ui/icons/Money';
@@ -12,7 +13,18 @@ import Tooltip from '@material-ui/core/Tooltip';
 import core from '~/services/core';
 import resolveSafeAddress from '~/utils/resolveUsers';
 import useStyles from '~/styles';
-import web3 from '~/services/web3';
+import web3, { ZERO_ADDRESS } from '~/services/web3';
+
+const resolveSilently = async (method, args) => {
+  return await new Promise((resolve) => {
+    method(args)
+      .then(resolve)
+      .catch(() => {
+        // Silently fail ..
+        resolve(null);
+      });
+  });
+};
 
 const SafeInspector = ({ selectedSafeAddress }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,22 +34,23 @@ const SafeInspector = ({ selectedSafeAddress }) => {
   useEffect(() => {
     const update = async () => {
       try {
-        const balance = await core.token.getBalance(selectedSafeAddress);
+        const balance = await resolveSilently(
+          core.token.getBalance,
+          selectedSafeAddress,
+        );
+
         const user = await resolveSafeAddress(selectedSafeAddress);
-        const tokenAddress = await new Promise((resolve) => {
-          core.token
-            .getAddress(selectedSafeAddress)
-            .then(resolve)
-            .catch(() => {
-              // Silently fail ..
-              resolve(null);
-            });
-        });
+
+        const tokenAddress = await resolveSilently(
+          core.token.getAddress,
+          selectedSafeAddress,
+        );
 
         setDetails({
-          balance: web3.utils.fromWei(balance),
+          balance: balance ? web3.utils.fromWei(balance) : null,
           tokenAddress,
-          username: user.data.length > 0 ? user.data[0].username : null,
+          username:
+            user.data && user.data.length > 0 ? user.data[0].username : null,
         });
       } catch (error) {
         console.error(error); // eslint-disable-line no-console
@@ -66,13 +79,14 @@ const SafeInspector = ({ selectedSafeAddress }) => {
     return (
       <MuiAlert elevation={2} severity="error" variant="filled">
         Could not find anything about node &quot;
-        {selectedSafeAddress.slice(0, 16)} ...&quot; Are you sure it exists?
+        {selectedSafeAddress.slice(0, 16)} ...&quot; Maybe this account is not
+        deployed yet?
       </MuiAlert>
     );
   }
 
   return (
-    <div className={classes.chipGroup}>
+    <Box className={classes.chipGroup}>
       <Tooltip arrow title="Public address">
         <Chip
           color="secondary"
@@ -81,25 +95,29 @@ const SafeInspector = ({ selectedSafeAddress }) => {
         />
       </Tooltip>
 
-      {details.username ? (
+      {details.username && (
         <Tooltip arrow title="Username">
           <Chip icon={<AccountCircleIcon />} label={details.username} />
         </Tooltip>
-      ) : null}
+      )}
 
       <Tooltip arrow title="Token address">
         <Chip
           icon={<MoneyIcon />}
           label={
-            details.tokenAddress ? details.tokenAddress : 'No Token available'
+            details.tokenAddress && details.tokenAddress !== ZERO_ADDRESS
+              ? details.tokenAddress
+              : 'No Token available'
           }
         />
       </Tooltip>
 
-      <Tooltip arrow title="Token balance">
-        <Chip icon={<PaymentIcon />} label={details.balance} />
-      </Tooltip>
-    </div>
+      {details.balance && (
+        <Tooltip arrow title="Token balance">
+          <Chip icon={<PaymentIcon />} label={details.balance} />
+        </Tooltip>
+      )}
+    </Box>
   );
 };
 

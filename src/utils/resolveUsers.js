@@ -15,5 +15,5 @@ export default async function resolveSafeAddress(safeAddress) {
     };
   }
 
-  return response.data;
+  return response;
 }

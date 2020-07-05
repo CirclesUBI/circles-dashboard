@@ -38,7 +38,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
     "dotenv": "^8.2.0",
-    "eslint": "^7.3.1",
+    "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-prettier": "^3.1.4",
@@ -53,10 +53,13 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@circles/analysis": "^0.3.1",
     "@circles/core": "^0.11.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@nivo/bar": "^0.62.0",
+    "@nivo/line": "^0.62.0",
     "clsx": "^1.1.1",
     "immutability-helper": "^3.1.1",
     "isomorphic-fetch": "^2.2.1",
