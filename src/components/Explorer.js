@@ -287,7 +287,14 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
     });
 
     return {
-      nodes,
+      nodes: nodes.reduce((acc, node) => {
+        // Remove nodes without links
+        if (node.neighbors && node.neighbors.length > 0) {
+          acc.push(node);
+        }
+
+        return acc;
+      }, []),
       links,
     };
   }, [explorer.updatedAt]);

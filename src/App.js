@@ -2,7 +2,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import Box from '@material-ui/core/Box';
-import BubbleChartRoundedIcon from '@material-ui/icons/BubbleChartRounded';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
@@ -16,6 +15,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState, useMemo, useEffect } from 'react';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
@@ -48,7 +48,7 @@ const views = [
   {
     title: 'Statistics',
     path: '/statistics',
-    icon: BubbleChartRoundedIcon,
+    icon: TimelineIcon,
   },
   {
     title: 'Status',
