@@ -15,6 +15,9 @@ const initialState = {
   api: {
     ...initialServiceState,
   },
+  ethereum: {
+    ...initialServiceState,
+  },
   graph: {
     ...initialServiceState,
     entityCount: '0',

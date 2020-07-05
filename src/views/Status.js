@@ -80,6 +80,17 @@ const Status = () => {
       </StatusContainer>
 
       <StatusContainer
+        isReachable={health.ethereum.isReachable}
+        isReady={health.ethereum.isReady}
+        title="Ethereum Node"
+      >
+        <StatusChip
+          isActive={health.ethereum.isReachable}
+          label={health.ethereum.isReachable ? 'Online' : 'Offline'}
+        />
+      </StatusContainer>
+
+      <StatusContainer
         isReachable={health.app.isReachable}
         isReady={health.app.isReady}
         title="Client Website"
@@ -106,7 +117,10 @@ const StatusContainer = (props) => {
 
   return (
     <Grid item lg={4} md={6} xs={12}>
-      <Paper className={clsx(classes.paper, classes.chipGroup)}>
+      <Paper
+        className={clsx(classes.paper, classes.chipGroup)}
+        style={{ minHeight: '20em' }}
+      >
         <StatusTitle>{props.title}</StatusTitle>
         {props.isReady ? props.children : <CircularProgress />}
       </Paper>

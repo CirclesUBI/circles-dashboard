@@ -89,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
   },
   chipGroup: {
     display: 'flex',
-    justifyContent: 'center',
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(0.5),

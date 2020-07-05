@@ -6,8 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "clear": "rimraf ./build",
-    "lint": "npm run lint:css && npm run lint:js",
-    "lint:js": "eslint --ignore-path .gitignore ./",
+    "lint": "eslint --ignore-path .gitignore ./",
     "serve": "cross-env NODE_ENV=development webpack-dev-server",
     "start": "npm run serve"
   },

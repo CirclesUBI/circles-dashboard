@@ -133,6 +133,22 @@ function checkApiHealth() {
   };
 }
 
+function checkEthereumNodeHealth() {
+  return async (dispatch) => {
+    const isReachable = await web3.eth.net.isListening();
+
+    dispatch({
+      type: ActionTypes.HEALTH_UPDATE_SERVICE,
+      meta: {
+        serviceName: 'ethereum',
+        state: {
+          isReachable,
+        },
+      },
+    });
+  };
+}
+
 export function checkHealthState() {
   return async (dispatch, getState) => {
     const { health } = getState();
@@ -146,10 +162,11 @@ export function checkHealthState() {
     });
 
     await Promise.all([
+      dispatch(checkApiHealth()),
       dispatch(checkAppHealth()),
+      dispatch(checkEthereumNodeHealth()),
       dispatch(checkGraphHealth()),
       dispatch(checkRelayHealth()),
-      dispatch(checkApiHealth()),
     ]);
 
     dispatch({
