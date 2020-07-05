@@ -4,7 +4,7 @@
   "description": "Status dashboard and network explorer for Circles",
   "main": "src/index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "build": "cross-env NODE_ENV=production webpack --mode production && cp 404.html build",
     "clear": "rimraf ./build",
     "lint": "eslint --ignore-path .gitignore ./",
     "serve": "cross-env NODE_ENV=development webpack-dev-server",
