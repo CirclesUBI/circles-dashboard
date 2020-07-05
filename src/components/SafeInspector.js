@@ -23,8 +23,16 @@ const SafeInspector = ({ selectedSafeAddress }) => {
     const update = async () => {
       try {
         const balance = await core.token.getBalance(selectedSafeAddress);
-        const tokenAddress = await core.token.getAddress(selectedSafeAddress);
         const user = await resolveSafeAddress(selectedSafeAddress);
+        const tokenAddress = await new Promise((resolve) => {
+          core.token
+            .getAddress(selectedSafeAddress)
+            .then(resolve)
+            .catch(() => {
+              // Silently fail ..
+              resolve(null);
+            });
+        });
 
         setDetails({
           balance: web3.utils.fromWei(balance),
