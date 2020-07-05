@@ -31,7 +31,8 @@ const SafeInspector = ({ selectedSafeAddress }) => {
           tokenAddress,
           username: user.data.length > 0 ? user.data[0].username : null,
         });
-      } catch {
+      } catch (error) {
+        console.error(error);
         setDetails(null);
       }
 
