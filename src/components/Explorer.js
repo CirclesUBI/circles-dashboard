@@ -186,7 +186,7 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
           );
         });
 
-      return transferLinks.length > 0
+      return transferLinks && transferLinks.length > 0
         ? transferLinks
             .map((transferLink) => {
               const { step, value } = transferLink;
