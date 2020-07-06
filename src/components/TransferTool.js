@@ -62,8 +62,9 @@ const TransferTool = (props) => {
         from: data.from,
         maximumFlow: web3.utils.fromWei(maximumFlow, 'ether'),
         to: data.to,
-        transactionsPath: transactionsPath.map((transaction) => {
+        transactionsPath: transactionsPath.map((transaction, index) => {
           transaction.value = web3.utils.fromWei(transaction.value, 'ether');
+          transaction.step = index + 1;
           return transaction;
         }),
         value: data.value.toString(),

@@ -177,22 +177,27 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
 
   const renderLinkLabel = useCallback(
     (link) => {
-      const transferLink =
+      const transferLinks =
         selectedTransfer &&
-        selectedTransfer.transactionsPath.find((transaction) => {
+        selectedTransfer.transactionsPath.filter((transaction) => {
           return (
             transaction.from === link.source.id &&
             transaction.to === link.target.id
           );
         });
 
-      return transferLink
-        ? `Transfer ${
-            transferLink.value
-          } Circles of ${transferLink.tokenOwnerAddress.slice(
-            0,
-            16,
-          )}... through trust connection, ${link.label.toLowerCase()}`
+      return transferLinks.length > 0
+        ? transferLinks
+            .map((transferLink) => {
+              const { step, value } = transferLink;
+              const tokenOwnerAddress = transferLink.tokenOwnerAddress.slice(
+                0,
+                16,
+              );
+
+              return `${step}: ${value} (${tokenOwnerAddress}..)`;
+            })
+            .join(' and ')
         : link.label;
     },
     [highlightLinks, selectedTransfer],
