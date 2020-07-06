@@ -1,6 +1,6 @@
 import update from 'immutability-helper';
 
-import ActionTypes from '~/store/explorer/types';
+import ActionTypes from '~/store/analysis/types';
 
 const initialState = {
   isLoading: false,
@@ -8,19 +8,19 @@ const initialState = {
   updatedAt: 0,
 };
 
-const explorerReducer = (state = initialState, action) => {
+const analysisReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.EXPLORER_UPDATE:
+    case ActionTypes.ANALYSIS_UPDATE:
       return update(state, {
         isLoading: { $set: true },
       });
-    case ActionTypes.EXPLORER_UPDATE_SUCCESS:
+    case ActionTypes.ANALYSIS_UPDATE_SUCCESS:
       return update(state, {
         isLoading: { $set: false },
         isReady: { $set: true },
         updatedAt: { $set: action.meta.updatedAt },
       });
-    case ActionTypes.EXPLORER_UPDATE_ERROR:
+    case ActionTypes.ANALYSIS_UPDATE_ERROR:
       return update(state, {
         isLoading: { $set: false },
       });
@@ -29,4 +29,4 @@ const explorerReducer = (state = initialState, action) => {
   }
 };
 
-export default explorerReducer;
+export default analysisReducer;

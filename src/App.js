@@ -37,7 +37,8 @@ import { initializeApp, checkAppState } from '~/store/app/actions';
 
 import pkg from '../package.json';
 
-const CHECK_APP_FREQUENCY = 10 * 1000;
+const CHECK_APP_FREQUENCY = 30 * 1000;
+const CIRCLES_URL = 'https://joincircles.net';
 
 const views = [
   {
@@ -160,11 +161,7 @@ const App = () => {
 
           <Box pt={4}>
             <Typography align="center" color="textSecondary" variant="body2">
-              <Link
-                color="inherit"
-                href="https://joincircles.net/"
-                target="_blank"
-              >
+              <Link color="inherit" href={CIRCLES_URL} target="_blank">
                 Circles
               </Link>
               {' - '}v{pkg.version}

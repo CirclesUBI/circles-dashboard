@@ -44,7 +44,9 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
-    handleSync();
+    if (!explorer.isReady) {
+      handleSync();
+    }
   }, []);
 
   useEffect(() => {

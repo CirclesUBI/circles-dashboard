@@ -5,4 +5,14 @@ CirclesAnalysis.setConfiguration({
   safeAddress: process.env.SAFE_ADDRESS,
 });
 
+let data = {};
+
+export function setAnalysisData(newData) {
+  data = newData;
+}
+
+export function getAnalysisData() {
+  return data;
+}
+
 export default CirclesAnalysis;

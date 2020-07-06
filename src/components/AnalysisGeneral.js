@@ -5,110 +5,101 @@ import Paper from '@material-ui/core/Paper';
 import React, { useEffect, useState } from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+import { useSelector } from 'react-redux';
 
-import analysis from '~/services/analysis';
-import { ZERO_ADDRESS } from '~/services/web3';
+import analysis, { getAnalysisData } from '~/services/analysis';
 import useStyles from '~/styles';
+import { ZERO_ADDRESS } from '~/services/web3';
 
 const AnalysisGeneral = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const classes = useStyles();
+  const { isReady, updatedAt } = useSelector((state) => state.analysis);
 
   useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
     const { avg, pick, avgBN, weiToCircles, count } = analysis.utils;
+    const { hubTransfers, transfers, trusts } = getAnalysisData();
+    const results = [];
 
-    const fetchData = async () => {
-      setIsLoading(true);
+    // Hub transfers
 
-      const results = [];
+    results.push({
+      label: 'Average amount',
+      value: weiToCircles(avgBN(pick(hubTransfers, 'amount'))),
+    });
 
-      try {
-        const hubTransfers = await analysis.getTransitive();
+    results.push({
+      label: 'Average total received transfers per user',
+      value: avg(Object.values(count(hubTransfers).from)),
+    });
 
-        results.push({
-          label: 'Average amount',
-          value: weiToCircles(avgBN(pick(hubTransfers, 'amount'))),
-        });
+    results.push({
+      label: 'Max total received transfers per user',
+      value: Math.max(...Object.values(count(hubTransfers).to)),
+    });
 
-        results.push({
-          label: 'Average total received transfers per user',
-          value: avg(Object.values(count(hubTransfers).from)),
-        });
+    // Transfers
 
-        results.push({
-          label: 'Max total received transfers per user',
-          value: Math.max(...Object.values(count(hubTransfers).to)),
-        });
+    const ubiPayouts = transfers.filter((item) => {
+      return item.from === ZERO_ADDRESS;
+    });
 
-        const transfers = await analysis.getTransfers();
+    results.push({
+      label: 'Average UBI payout amount',
+      value: weiToCircles(avgBN(pick(ubiPayouts, 'amount'))),
+    });
 
-        const ubiPayouts = transfers.filter((item) => {
-          return item.from === ZERO_ADDRESS;
-        });
+    results.push({
+      label: 'UBI payouts count',
+      value: ubiPayouts.length,
+    });
 
-        results.push({
-          label: 'Average UBI payout amount',
-          value: weiToCircles(avgBN(pick(ubiPayouts, 'amount'))),
-        });
+    // Trust
 
-        results.push({
-          label: 'UBI payouts count',
-          value: ubiPayouts.length,
-        });
+    const revokedTrusts = trusts.filter((item) => {
+      return item.limitPercentage === '0';
+    });
 
-        const trusts = await analysis.getTrusts();
+    const createdTrusts = trusts.filter((item) => {
+      return item.limitPercentage !== '0';
+    });
 
-        const revokedTrusts = trusts.filter((item) => {
-          return item.limitPercentage === '0';
-        });
+    results.push({
+      label: 'Created trust connections',
+      value: createdTrusts.length,
+    });
 
-        const createdTrusts = trusts.filter((item) => {
-          return item.limitPercentage !== '0';
-        });
+    results.push({
+      label: 'Revoked trust connections',
+      value: revokedTrusts.length,
+    });
 
-        results.push({
-          label: 'Created trust connections',
-          value: createdTrusts.length,
-        });
+    results.push({
+      label: 'Average outgoing trust connections',
+      value: avg(Object.values(count(createdTrusts).canSendToAddress)),
+    });
 
-        results.push({
-          label: 'Revoked trust connections',
-          value: revokedTrusts.length,
-        });
+    results.push({
+      label: 'Average incoming trust connections',
+      value: avg(Object.values(count(createdTrusts).userAddress)),
+    });
 
-        results.push({
-          label: 'Average outgoing trust connections',
-          value: avg(Object.values(count(createdTrusts).canSendToAddress)),
-        });
+    results.push({
+      label: 'Max outgoing trust connections',
+      value: Math.max(...Object.values(count(createdTrusts).userAddress)),
+    });
 
-        results.push({
-          label: 'Average incoming trust connections',
-          value: avg(Object.values(count(createdTrusts).userAddress)),
-        });
+    results.push({
+      label: 'Max incoming trust connections',
+      value: Math.max(...Object.values(count(createdTrusts).canSendToAddress)),
+    });
 
-        results.push({
-          label: 'Max outgoing trust connections',
-          value: Math.max(...Object.values(count(createdTrusts).userAddress)),
-        });
-
-        results.push({
-          label: 'Max incoming trust connections',
-          value: Math.max(
-            ...Object.values(count(createdTrusts).canSendToAddress),
-          ),
-        });
-
-        setData(results);
-      } catch (error) {
-        console.error(error); // eslint-disable-line no-console
-      }
-
-      setIsLoading(false);
-    };
-
-    fetchData();
-  }, []);
+    setData(results);
+  }, [updatedAt, isReady]);
 
   return (
     <Paper className={classes.paper}>
@@ -116,19 +107,21 @@ const AnalysisGeneral = () => {
         General
       </Typography>
 
-      {isLoading && <CircularProgress />}
-
-      <Box className={classes.chipGroup}>
-        {data.map((item, index) => {
-          return (
-            <Tooltip arrow key={index} title={item.value}>
-              <Chip
-                label={`${item.label}: ${item.value.toString().slice(0, 6)}`}
-              />
-            </Tooltip>
-          );
-        })}
-      </Box>
+      {!isReady ? (
+        <CircularProgress />
+      ) : (
+        <Box className={classes.chipGroup}>
+          {data.map((item, index) => {
+            return (
+              <Tooltip arrow key={index} title={item.value}>
+                <Chip
+                  label={`${item.label}: ${item.value.toString().slice(0, 6)}`}
+                />
+              </Tooltip>
+            );
+          })}
+        </Box>
+      )}
     </Paper>
   );
 };

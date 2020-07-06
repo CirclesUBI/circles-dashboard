@@ -3,6 +3,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
+import Fab from '@material-ui/core/Fab';
 import GrainIcon from '@material-ui/icons/Grain';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -10,18 +11,41 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import PropTypes from 'prop-types';
 import React from 'react';
+import SyncIcon from '@material-ui/icons/Sync';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import useStyles from '~/styles';
 import web3 from '~/services/web3';
+import { checkHealthState } from '~/store/health/actions';
 
 const Status = () => {
   const health = useSelector((state) => state.health);
+  const dispatch = useDispatch();
+
+  const handleSync = () => {
+    dispatch(checkHealthState());
+  };
 
   return (
     <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Tooltip arrow title="Sync with latest data">
+          <span>
+            <Fab
+              color="secondary"
+              disabled={health.isLoading}
+              size="small"
+              onClick={handleSync}
+            >
+              <SyncIcon />
+            </Fab>
+          </span>
+        </Tooltip>
+      </Grid>
+
       <StatusContainer isReady={health.graph.isReady} title="Graph Node">
         <StatusChip
           isActive={health.graph.isReachable}
