@@ -197,7 +197,7 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
 
               return `${step}: ${value} (${tokenOwnerAddress}..)`;
             })
-            .join(' and ')
+            .join(' and ') + ` (${link.label})`
         : link.label;
     },
     [highlightLinks, selectedTransfer],
