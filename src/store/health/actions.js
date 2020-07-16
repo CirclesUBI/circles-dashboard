@@ -116,7 +116,7 @@ function checkRelayHealth() {
 }
 
 function checkApiHealth() {
-  const endpoint = `${process.env.USERNAME_SERVICE_EXTERNAL}/api`;
+  const endpoint = `${process.env.API_SERVICE_EXTERNAL}/api`;
 
   return async (dispatch) => {
     const isReachable = await isServiceReachable(endpoint);
