@@ -15,9 +15,6 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import SendIcon from '@material-ui/icons/Send';
-import Slider from '@material-ui/core/Slider';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
 
 import core from '~/services/core';
 import web3 from '~/services/web3';
@@ -38,7 +35,7 @@ const TransferTool = (props) => {
     setIsLoading(true);
 
     const formData = new FormData(ref.current);
-    const data = ['from', 'to', 'value', 'hops'].reduce((acc, name) => {
+    const data = ['from', 'to', 'value'].reduce((acc, name) => {
       acc[name] = formData.get(name);
       return acc;
     }, {});
@@ -48,27 +45,13 @@ const TransferTool = (props) => {
         throw new Error('"value" is missing or invalid');
       }
 
-      const {
-        transactionsPath,
-        maximumFlow,
-      } = await core.token.calculateTransfer(
+      const transfer = await core.token.findTransitiveTransfer(
         data.from,
         data.to,
         web3.utils.toBN(web3.utils.toWei(data.value, 'ether')),
-        parseInt(data.hops, 10),
       );
 
-      props.onPathFound({
-        from: data.from,
-        maximumFlow: web3.utils.fromWei(maximumFlow, 'ether'),
-        to: data.to,
-        transactionsPath: transactionsPath.map((transaction, index) => {
-          transaction.value = web3.utils.fromWei(transaction.value, 'ether');
-          transaction.step = index + 1;
-          return transaction;
-        }),
-        value: data.value.toString(),
-      });
+      props.onPathFound(transfer);
     } catch (error) {
       setDialogText(error.message);
       setIsDialogOpen(true);
@@ -147,30 +130,6 @@ const TransferTool = (props) => {
                 </InputAdornment>
               }
               type="number"
-            />
-          </FormControl>
-        </Grid>
-
-        <Grid item xs={12}>
-          <FormControl>
-            <Tooltip
-              arrow
-              title="How many steps will the algorithm take maximally to find the receiver in the senders trust network"
-            >
-              <Typography gutterBottom id="hops">
-                Network hops
-              </Typography>
-            </Tooltip>
-
-            <Slider
-              defaultValue={3}
-              disabled={isLoading}
-              id="hops"
-              max={10}
-              min={1}
-              name="hops"
-              step={1}
-              valueLabelDisplay="auto"
             />
           </FormControl>
         </Grid>

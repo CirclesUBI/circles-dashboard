@@ -163,7 +163,7 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
     (link) => {
       const isTransferLink =
         selectedTransfer &&
-        selectedTransfer.transactionsPath.find((transaction) => {
+        selectedTransfer.transferSteps.find((transaction) => {
           return (
             transaction.from === link.source.id &&
             transaction.to === link.target.id
@@ -179,7 +179,7 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
     (link) => {
       const transferLinks =
         selectedTransfer &&
-        selectedTransfer.transactionsPath.filter((transaction) => {
+        selectedTransfer.transferSteps.filter((transaction) => {
           return (
             transaction.from === link.source.id &&
             transaction.to === link.target.id
@@ -206,7 +206,7 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
   const getNodeColor = useCallback(
     (node) => {
       if (selectedTransfer) {
-        const isTransferNode = selectedTransfer.transactionsPath.find(
+        const isTransferNode = selectedTransfer.transferSteps.find(
           (transaction) => {
             return transaction.from === node.id || transaction.to === node.id;
           },
@@ -353,7 +353,7 @@ const Explorer = ({ selectedSafeAddress, selectedTransfer, ...props }) => {
             <Chip
               color="primary"
               icon={<SendIcon fontSize="small" />}
-              label={`Value: ${selectedTransfer.value}, Max: ${selectedTransfer.maximumFlow}, Steps: ${selectedTransfer.transactionsPath.length}`}
+              label={`Value: ${selectedTransfer.transferValue}, Max: ${selectedTransfer.maxFlowValue}, Steps: ${selectedTransfer.transferSteps.length}`}
               onDelete={props.onTransferReset}
             />
           )}

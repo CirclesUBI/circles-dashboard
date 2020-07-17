@@ -74,12 +74,11 @@ const token = {
     });
   },
 
-  calculateTransfer: async (from, to, value, networkHops) => {
-    return await requestCore('token', 'calculateTransfer', {
+  findTransitiveTransfer: async (from, to, value) => {
+    return await requestCore('token', 'findTransitiveTransfer', {
       from,
       to,
       value,
-      networkHops,
     });
   },
 };
