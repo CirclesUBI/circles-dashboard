@@ -46,8 +46,8 @@ const TransferTool = (props) => {
       }
 
       const transfer = await core.token.findTransitiveTransfer(
-        data.from,
-        data.to,
+        web3.utils.toChecksumAddress(data.from),
+        web3.utils.toChecksumAddress(data.to),
         web3.utils.toBN(web3.utils.toWei(data.value, 'ether')),
       );
 
