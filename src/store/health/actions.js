@@ -22,19 +22,29 @@ function checkAppHealth() {
 }
 
 function checkGraphHealth() {
-  const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs`;
+  const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/index-node/graphql`;
+  const subgraphName = process.env.SUBGRAPH_NAME;
 
   return async (dispatch) => {
     // Get status from the current subgraph
     const query = `{
-      subgraphs {
-        currentVersion {
-          deployment {
-            synced
-            failed
-            latestEthereumBlockNumber
-            totalEthereumBlocksCount
-            entityCount
+      indexingStatusForCurrentVersion(subgraphName: "${subgraphName}") {
+        synced
+        health
+        fatalError {
+          message
+          block {
+            number
+            hash
+          }
+          handler
+        }
+        chains {
+          chainHeadBlock {
+            number
+          }
+          latestBlock {
+            number
           }
         }
       }
@@ -43,13 +53,13 @@ function checkGraphHealth() {
     try {
       const data = await graphRequest(endpoint, query);
 
+      console.log(data) // eslint-disable-line
+
       const {
-        entityCount,
-        failed,
+        fatalError,
         synced,
-        latestEthereumBlockNumber,
-        totalEthereumBlocksCount,
-      } = data.subgraphs[0].currentVersion.deployment;
+        chains,
+      } = data.indexingStatusForCurrentVersion;
 
       dispatch({
         type: ActionTypes.HEALTH_UPDATE_SERVICE,
@@ -57,15 +67,14 @@ function checkGraphHealth() {
           serviceName: 'graph',
           state: {
             isReachable: true,
-            entityCount,
-            isFailed: failed,
+            isFailed: fatalError ? true : false,
             isSynced: synced,
-            latestEthereumBlockNumber,
-            totalEthereumBlocksCount,
+            latestEthereumBlockNumber: chains[0].latestBlock.number,
+            totalEthereumBlocksCount: chains[0].chainHeadBlock.number,
           },
         },
       });
-    } catch {
+    } catch (err) {
       dispatch({
         type: ActionTypes.HEALTH_UPDATE_SERVICE,
         meta: {
