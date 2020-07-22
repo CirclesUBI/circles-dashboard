@@ -53,8 +53,6 @@ function checkGraphHealth() {
     try {
       const data = await graphRequest(endpoint, query);
 
-      console.log(data) // eslint-disable-line
-
       const {
         fatalError,
         synced,
@@ -74,7 +72,7 @@ function checkGraphHealth() {
           },
         },
       });
-    } catch (err) {
+    } catch {
       dispatch({
         type: ActionTypes.HEALTH_UPDATE_SERVICE,
         meta: {

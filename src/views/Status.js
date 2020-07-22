@@ -66,11 +66,6 @@ const Status = () => {
         />
 
         <Chip
-          icon={<GrainIcon />}
-          label={`${health.graph.entityCount} entities`}
-        />
-
-        <Chip
           icon={<PlaylistAddCheckIcon />}
           label={`${health.graph.latestEthereumBlockNumber} / ${health.graph.totalEthereumBlocksCount} blocks`}
         />

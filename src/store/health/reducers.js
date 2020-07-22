@@ -20,7 +20,6 @@ const initialState = {
   },
   graph: {
     ...initialServiceState,
-    entityCount: '0',
     isFailed: false,
     isSynced: false,
     latestEthereumBlockNumber: '0',
