@@ -66,7 +66,58 @@ export function checkExplorerState() {
               canSendTo: convertAddress(connection.canSendToAddress),
             },
           });
-        }, []);
+        });
+
+        index += 1;
+      }
+
+      index = 0;
+      isEmpty = false;
+
+      while (!isEmpty) {
+        const filter = `
+          orderBy: id,
+          first: ${PAGE_SIZE},
+          skip: ${index * PAGE_SIZE},
+        `;
+
+        const query = `{
+          safes(${filter}) {
+            id
+            balances {
+              amount
+              token {
+                owner {
+                  id
+                }
+              }
+            }
+          }
+        }`;
+
+        const { safes } = await graphRequest(endpoint, query);
+
+        if (safes.length === 0) {
+          isEmpty = true;
+        }
+
+        safes.forEach((safe) => {
+          safe.balances.forEach(({ token, amount }) => {
+            if (safe.id === token.owner.id) {
+              return;
+            }
+
+            connections.push({
+              id: `${safe.id}-${token.owner.id}`,
+              data: {
+                limitPercentage: 100,
+                limit: amount,
+                user: convertAddress(safe.id),
+                canSendTo: convertAddress(token.owner.id),
+              },
+            });
+          });
+        });
 
         index += 1;
       }
