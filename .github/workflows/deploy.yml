@@ -3,7 +3,7 @@ name: Deploy website via Github Pages
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -48,4 +48,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          cname: dashboard.joincircles.net
+          cname: dashboard.circles.garden
