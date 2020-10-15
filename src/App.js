@@ -31,7 +31,7 @@ import Network from '~/views/Network';
 import NotFound from '~/views/NotFound';
 import Statistics from '~/views/Statistics';
 import Status from '~/views/Status';
-import logo from '~/assets/logo.png';
+import logo from '~/assets/logo.svg';
 import useStyles from '~/styles';
 import { initializeApp, checkAppState } from '~/store/app/actions';
 
@@ -62,7 +62,7 @@ const App = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const location = useLocation();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setIsDrawerOpen(true);
