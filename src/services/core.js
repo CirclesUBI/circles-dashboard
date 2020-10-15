@@ -98,12 +98,13 @@ const activity = {
 
 // Utils module
 
-const { fromFreckles, toFreckles, requestGraph } = core.utils;
+const { fromFreckles, toFreckles, requestGraph, requestAPI } = core.utils;
 
 const utils = {
   fromFreckles,
   toFreckles,
   requestGraph,
+  requestAPI,
 };
 
 // Errors

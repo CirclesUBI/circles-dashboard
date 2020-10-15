@@ -30,6 +30,15 @@ const initialState = {
     ...initialServiceState,
     currentBalance: '0',
   },
+  worker: {
+    ...initialServiceState,
+    countEdges: 0,
+    countSafes: 0,
+    countTokens: 0,
+    lastBlockNumber: 0,
+    lastUpdateDuration: 0,
+    lastUpdateAt: 0,
+  },
 };
 
 const healthReducer = (state = initialState, action) => {

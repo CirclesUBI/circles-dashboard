@@ -1,4 +1,5 @@
 import ActionTypes from '~/store/health/types';
+import core from '~/services/core';
 import graphRequest from '~/services/graphql';
 import isServiceReachable from '~/services/health';
 import web3 from '~/services/web3';
@@ -133,6 +134,38 @@ function checkApiHealth() {
   };
 }
 
+function checkApiWorkerHealth() {
+  return async (dispatch) => {
+    const { data } = await core.utils.requestAPI({
+      path: ['transfers', 'status'],
+    });
+
+    const {
+      countEdges,
+      countSafes,
+      countTokens,
+      lastBlockNumber,
+      lastUpdateAt,
+      lastUpdateDuration,
+    } = data;
+
+    dispatch({
+      type: ActionTypes.HEALTH_UPDATE_SERVICE,
+      meta: {
+        serviceName: 'worker',
+        state: {
+          countEdges,
+          countSafes,
+          countTokens,
+          lastBlockNumber,
+          lastUpdateDuration,
+          lastUpdateAt,
+        },
+      },
+    });
+  };
+}
+
 function checkEthereumNodeHealth() {
   return async (dispatch) => {
     const isReachable = await web3.eth.net.isListening();
@@ -163,6 +196,7 @@ export function checkHealthState() {
 
     await Promise.all([
       dispatch(checkApiHealth()),
+      dispatch(checkApiWorkerHealth()),
       dispatch(checkAppHealth()),
       dispatch(checkEthereumNodeHealth()),
       dispatch(checkGraphHealth()),
