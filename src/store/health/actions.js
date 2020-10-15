@@ -4,6 +4,10 @@ import graphRequest from '~/services/graphql';
 import isServiceReachable from '~/services/health';
 import web3 from '~/services/web3';
 
+function isOfficialNode() {
+  return process.env.GRAPH_NODE_EXTERNAL.includes('api.thegraph.com');
+}
+
 function checkAppHealth() {
   const endpoint = process.env.BASE_PATH;
 
@@ -23,50 +27,100 @@ function checkAppHealth() {
 }
 
 function checkGraphHealth() {
-  const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs`;
-
   return async (dispatch) => {
-    // Get status from the current subgraph
-    const query = `{
-      subgraphs {
-        currentVersion {
-          deployment {
-            synced
-            failed
-            latestEthereumBlockNumber
-            totalEthereumBlocksCount
-            entityCount
-          }
-        }
-      }
-    }`;
-
     try {
-      const data = await graphRequest(endpoint, query);
+      if (!isOfficialNode()) {
+        const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs`;
 
-      const {
-        entityCount,
-        failed,
-        synced,
-        latestEthereumBlockNumber,
-        totalEthereumBlocksCount,
-      } = data.subgraphs[0].currentVersion.deployment;
+        // Get status from the current subgraph
+        const query = `{
+          subgraphs {
+            currentVersion {
+              deployment {
+                synced
+                failed
+                latestEthereumBlockNumber
+                totalEthereumBlocksCount
+                entityCount
+              }
+            }
+          }
+        }`;
 
-      dispatch({
-        type: ActionTypes.HEALTH_UPDATE_SERVICE,
-        meta: {
-          serviceName: 'graph',
-          state: {
-            isReachable: true,
-            entityCount,
-            isFailed: failed,
-            isSynced: synced,
-            latestEthereumBlockNumber,
-            totalEthereumBlocksCount,
+        const data = await graphRequest(endpoint, query);
+
+        const {
+          entityCount,
+          failed,
+          synced,
+          latestEthereumBlockNumber,
+          totalEthereumBlocksCount,
+        } = data.subgraphs[0].currentVersion.deployment;
+
+        dispatch({
+          type: ActionTypes.HEALTH_UPDATE_SERVICE,
+          meta: {
+            serviceName: 'graph',
+            state: {
+              isReachable: true,
+              entityCount,
+              isFailed: failed,
+              isSynced: synced,
+              latestEthereumBlockNumber,
+              totalEthereumBlocksCount,
+            },
           },
-        },
-      });
-    } catch {
+        });
+      } else {
+        const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/index-node/graphql`;
+        const subgraphName = process.env.SUBGRAPH_NAME;
+
+        const query = `{
+          indexingStatusForCurrentVersion(subgraphName: "${subgraphName}") {
+            synced
+            health
+            fatalError {
+              message
+              block {
+                number
+                hash
+              }
+              handler
+            }
+            chains {
+              chainHeadBlock {
+                number
+              }
+              latestBlock {
+                number
+              }
+            }
+          }
+        }`;
+
+        const data = await graphRequest(endpoint, query);
+
+        const {
+          fatalError,
+          synced,
+          chains,
+        } = data.indexingStatusForCurrentVersion;
+
+        dispatch({
+          type: ActionTypes.HEALTH_UPDATE_SERVICE,
+          meta: {
+            serviceName: 'graph',
+            state: {
+              isReachable: true,
+              isFailed: fatalError ? true : false,
+              isSynced: synced,
+              latestEthereumBlockNumber: chains[0].latestBlock.number,
+              totalEthereumBlocksCount: chains[0].chainHeadBlock.number,
+            },
+          },
+        });
+      }
+    } catch (error) {
       dispatch({
         type: ActionTypes.HEALTH_UPDATE_SERVICE,
         meta: {
