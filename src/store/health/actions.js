@@ -40,7 +40,6 @@ function checkGraphHealth() {
                 synced
                 failed
                 latestEthereumBlockNumber
-                totalEthereumBlocksCount
                 entityCount
               }
             }
@@ -115,7 +114,6 @@ function checkGraphHealth() {
               isFailed: fatalError ? true : false,
               isSynced: synced,
               latestEthereumBlockNumber: chains[0].latestBlock.number,
-              totalEthereumBlocksCount: chains[0].chainHeadBlock.number,
             },
           },
         });

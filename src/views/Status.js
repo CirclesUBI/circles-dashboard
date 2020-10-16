@@ -73,7 +73,7 @@ const Status = () => {
 
         <Chip
           icon={<PlaylistAddCheckIcon />}
-          label={`${health.graph.latestEthereumBlockNumber} / ${health.graph.totalEthereumBlocksCount} blocks`}
+          label={`${health.graph.latestEthereumBlockNumber} block`}
         />
       </StatusContainer>
 
