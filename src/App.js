@@ -37,7 +37,6 @@ import { initializeApp, checkAppState } from '~/store/app/actions';
 
 import pkg from '../package.json';
 
-const CHECK_APP_FREQUENCY = 30 * 1000;
 const CIRCLES_URL = 'https://joincircles.net';
 
 const views = [
@@ -80,9 +79,9 @@ const App = () => {
 
     initialize();
 
-    window.setInterval(async () => {
-      await dispatch(checkAppState());
-    }, CHECK_APP_FREQUENCY);
+    // window.setInterval(async () => {
+    //   await dispatch(checkAppState());
+    // }, CHECK_APP_FREQUENCY);
   };
 
   useEffect(onAppStart, []);
