@@ -1,29 +1,10 @@
 import ActionTypes from '~/store/health/types';
-import core from '~/services/core';
 import graphRequest from '~/services/graphql';
 import isServiceReachable from '~/services/health';
 import web3 from '~/services/web3';
 
 function isOfficialNode() {
   return process.env.GRAPH_NODE_EXTERNAL.includes('api.thegraph.com');
-}
-
-function checkAppHealth() {
-  const endpoint = process.env.BASE_PATH;
-
-  return async (dispatch) => {
-    const isReachable = await isServiceReachable(endpoint);
-
-    dispatch({
-      type: ActionTypes.HEALTH_UPDATE_SERVICE,
-      meta: {
-        serviceName: 'app',
-        state: {
-          isReachable,
-        },
-      },
-    });
-  };
 }
 
 function checkGraphHealth() {
@@ -53,7 +34,6 @@ function checkGraphHealth() {
           failed,
           synced,
           latestEthereumBlockNumber,
-          totalEthereumBlocksCount,
         } = data.subgraphs[0].currentVersion.deployment;
 
         dispatch({
@@ -66,7 +46,6 @@ function checkGraphHealth() {
               isFailed: failed,
               isSynced: synced,
               latestEthereumBlockNumber,
-              totalEthereumBlocksCount,
             },
           },
         });
@@ -152,8 +131,12 @@ function checkRelayHealth() {
       return;
     }
 
-    const currentBalance = await web3.eth.getBalance(
-      process.env.SAFE_FUNDER_ADDRESS,
+    const currentBalanceFunder = await web3.eth.getBalance(
+      process.env.RELAY_FUNDER_ADDRESS,
+    );
+
+    const currentBalanceSender = await web3.eth.getBalance(
+      process.env.RELAY_SENDER_ADDRESS,
     );
 
     dispatch({
@@ -161,7 +144,8 @@ function checkRelayHealth() {
       meta: {
         serviceName: 'relay',
         state: {
-          currentBalance,
+          currentBalanceFunder,
+          currentBalanceSender,
         },
       },
     });
@@ -186,41 +170,11 @@ function checkApiHealth() {
   };
 }
 
-function checkApiWorkerHealth() {
-  return async (dispatch) => {
-    const { data } = await core.utils.requestAPI({
-      path: ['transfers', 'status'],
-    });
-
-    const {
-      countEdges,
-      countSafes,
-      countTokens,
-      lastBlockNumber,
-      lastUpdateAt,
-      lastUpdateDuration,
-    } = data;
-
-    dispatch({
-      type: ActionTypes.HEALTH_UPDATE_SERVICE,
-      meta: {
-        serviceName: 'worker',
-        state: {
-          countEdges,
-          countSafes,
-          countTokens,
-          lastBlockNumber,
-          lastUpdateDuration,
-          lastUpdateAt,
-        },
-      },
-    });
-  };
-}
-
 function checkEthereumNodeHealth() {
   return async (dispatch) => {
     const isReachable = await web3.eth.net.isListening();
+
+    const block = await web3.eth.getBlock('latest');
 
     dispatch({
       type: ActionTypes.HEALTH_UPDATE_SERVICE,
@@ -228,6 +182,7 @@ function checkEthereumNodeHealth() {
         serviceName: 'ethereum',
         state: {
           isReachable,
+          currentBlockHeight: block.number,
         },
       },
     });
@@ -248,8 +203,6 @@ export function checkHealthState() {
 
     await Promise.all([
       dispatch(checkApiHealth()),
-      dispatch(checkApiWorkerHealth()),
-      dispatch(checkAppHealth()),
       dispatch(checkEthereumNodeHealth()),
       dispatch(checkGraphHealth()),
       dispatch(checkRelayHealth()),

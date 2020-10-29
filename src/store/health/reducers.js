@@ -9,14 +9,12 @@ const initialServiceState = {
 
 const initialState = {
   isLoading: false,
-  app: {
-    ...initialServiceState,
-  },
   api: {
     ...initialServiceState,
   },
   ethereum: {
     ...initialServiceState,
+    currentBlockHeight: '0',
   },
   graph: {
     ...initialServiceState,
@@ -24,20 +22,11 @@ const initialState = {
     isFailed: false,
     isSynced: false,
     latestEthereumBlockNumber: '0',
-    totalEthereumBlocksCount: '0',
   },
   relay: {
     ...initialServiceState,
-    currentBalance: '0',
-  },
-  worker: {
-    ...initialServiceState,
-    countEdges: 0,
-    countSafes: 0,
-    countTokens: 0,
-    lastBlockNumber: 0,
-    lastUpdateDuration: 0,
-    lastUpdateAt: 0,
+    currentBalanceFunder: '0',
+    currentBalanceSender: '0',
   },
 };
 

@@ -15,7 +15,6 @@ import SyncIcon from '@material-ui/icons/Sync';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { DateTime } from 'luxon';
 import { useSelector, useDispatch } from 'react-redux';
 
 import useStyles from '~/styles';
@@ -73,7 +72,7 @@ const Status = () => {
 
         <Chip
           icon={<PlaylistAddCheckIcon />}
-          label={`${health.graph.latestEthereumBlockNumber} block`}
+          label={`${health.graph.latestEthereumBlockNumber} block height`}
         />
       </StatusContainer>
 
@@ -89,7 +88,16 @@ const Status = () => {
 
         <Chip
           icon={<PaymentIcon />}
-          label={`${web3.utils.fromWei(health.relay.currentBalance)} ETH`}
+          label={`${web3.utils.fromWei(
+            health.relay.currentBalanceFunder,
+          )} ETH Funder`}
+        />
+
+        <Chip
+          icon={<PaymentIcon />}
+          label={`${web3.utils.fromWei(
+            health.relay.currentBalanceSender,
+          )} ETH Sender`}
         />
       </StatusContainer>
 
@@ -113,43 +121,10 @@ const Status = () => {
           isActive={health.ethereum.isReachable}
           label={health.ethereum.isReachable ? 'Online' : 'Offline'}
         />
-      </StatusContainer>
-
-      <StatusContainer
-        isReachable={health.app.isReachable}
-        isReady={health.app.isReady}
-        title="Client Website"
-      >
-        <StatusChip
-          isActive={health.app.isReachable}
-          label={health.app.isReachable ? 'Online' : 'Offline'}
-        />
-      </StatusContainer>
-
-      <StatusContainer isReady={health.worker.isReady} title="API Worker">
-        <Chip
-          icon={<GrainIcon />}
-          label={`${health.worker.countEdges} edges`}
-        />
 
         <Chip
-          icon={<GrainIcon />}
-          label={`${health.worker.countTokens} tokens`}
-        />
-
-        <Chip
-          icon={<GrainIcon />}
-          label={`${health.worker.countSafes} safes`}
-        />
-
-        <Chip label={`${health.worker.lastBlockNumber} last block number`} />
-        <Chip
-          label={`${health.worker.lastUpdateDuration}ms last update duration`}
-        />
-        <Chip
-          label={`${DateTime.fromMillis(
-            health.worker.lastUpdateAt,
-          ).toLocaleString(DateTime.DATETIME_FULL)} last update`}
+          icon={<PlaylistAddCheckIcon />}
+          label={`${health.ethereum.currentBlockHeight} block height`}
         />
       </StatusContainer>
     </Grid>
