@@ -54,7 +54,7 @@ const views = [
   // },
   {
     title: 'Status',
-    path: '/status',
+    path: '/',
     icon: FavoriteIcon,
   },
 ];
