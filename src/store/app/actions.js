@@ -1,5 +1,5 @@
 import ActionTypes from '~/store/app/types';
-import { checkAnalysisState } from '~/store/analysis/actions';
+// import { checkAnalysisState } from '~/store/analysis/actions';
 import { checkHealthState } from '~/store/health/actions';
 import { getPublicAddress } from '~/services/wallet';
 
@@ -39,6 +39,6 @@ export function checkAppState() {
     }
 
     dispatch(checkHealthState());
-    dispatch(checkAnalysisState());
+    // dispatch(checkAnalysisState());
   };
 }

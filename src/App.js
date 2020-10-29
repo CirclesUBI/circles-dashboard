@@ -1,6 +1,6 @@
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
-import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
+// import BlurOnRoundedIcon from '@material-ui/icons/BlurOnRounded';
 import Box from '@material-ui/core/Box';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Container from '@material-ui/core/Container';
@@ -15,7 +15,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import React, { useState, useMemo, useEffect } from 'react';
-import TimelineIcon from '@material-ui/icons/Timeline';
+// import TimelineIcon from '@material-ui/icons/Timeline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
@@ -27,9 +27,9 @@ import {
 } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import Network from '~/views/Network';
+// import Network from '~/views/Network';
 import NotFound from '~/views/NotFound';
-import Statistics from '~/views/Statistics';
+// import Statistics from '~/views/Statistics';
 import Status from '~/views/Status';
 import logo from '~/assets/logo.svg';
 import useStyles from '~/styles';
@@ -39,17 +39,19 @@ import pkg from '../package.json';
 
 const CIRCLES_URL = 'https://joincircles.net';
 
+const CHECK_APP_FREQUENCY = 1000 * 30;
+
 const views = [
-  {
-    title: 'Network',
-    path: '/',
-    icon: BlurOnRoundedIcon,
-  },
-  {
-    title: 'Statistics',
-    path: '/statistics',
-    icon: TimelineIcon,
-  },
+  // {
+  //   title: 'Network',
+  //   path: '/',
+  //   icon: BlurOnRoundedIcon,
+  // },
+  // {
+  //   title: 'Statistics',
+  //   path: '/statistics',
+  //   icon: TimelineIcon,
+  // },
   {
     title: 'Status',
     path: '/status',
@@ -79,9 +81,9 @@ const App = () => {
 
     initialize();
 
-    // window.setInterval(async () => {
-    //   await dispatch(checkAppState());
-    // }, CHECK_APP_FREQUENCY);
+    window.setInterval(async () => {
+      await dispatch(checkAppState());
+    }, CHECK_APP_FREQUENCY);
   };
 
   useEffect(onAppStart, []);
@@ -152,9 +154,9 @@ const App = () => {
 
         <Container className={classes.container} maxWidth="lg">
           <Switch>
-            <Route component={Network} exact path="/" />
-            <Route component={Statistics} path="/statistics" />
-            <Route component={Status} path="/status" />
+            {/* <Route component={Network} exact path="/" /> */}
+            {/* <Route component={Statistics} path="/statistics" /> */}
+            <Route component={Status} path="/" />
             <Route component={NotFound} />
           </Switch>
 
