@@ -6,7 +6,7 @@
 
 <div align="center">
  <strong>
-   Status dashboard and trust network explorer for [Circles]
+   Status dashboard and trust network explorer for [Circles](https://github.com/CirclesUBI)
  </strong>
 </div>
 
