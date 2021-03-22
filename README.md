@@ -45,25 +45,33 @@
 
 <br/>
 
+## Usage
+
+Visit [`dashboard.circles.garden`] to see the current health status of the Circles system.
+
+[`dashboard.circles.garden`]: https://dashboard.circles.garden
+
 ## Development
 
 ```
-// Install dependencies
+# Install dependencies
 npm install
 
-// Copy env file and edit it
+# Copy env file and edit it
 cp .env.example .env
 
-// Check code formatting
+# Check code formatting
 npm run lint
 
-// Start local server and watch changes
+# Start local server and watch changes
 npm run serve
 
-// Build for production
+# Build for production
 npm run build
 ```
 
 ## License
 
-GNU Affero General Public License v3.0 `AGPL-3.0`
+GNU Affero General Public License v3.0 [`AGPL-3.0`]
+
+[`AGPL-3.0`]: LICENSE
