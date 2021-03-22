@@ -53,7 +53,7 @@ Visit [`dashboard.circles.garden`] to see the current health status of the Circl
 
 ## Development
 
-```
+```bash
 # Install dependencies
 npm install
 
