@@ -3,100 +3,37 @@ import graphRequest from '~/services/graphql';
 import isServiceReachable from '~/services/health';
 import web3 from '~/services/web3';
 
-function isOfficialNode() {
-  return process.env.GRAPH_NODE_EXTERNAL.includes('api.thegraph.com');
-}
-
 function checkGraphHealth() {
   return async (dispatch) => {
     try {
-      if (!isOfficialNode()) {
-        const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs`;
-
-        // Get status from the current subgraph
-        const query = `{
-          subgraphs {
-            currentVersion {
-              deployment {
-                synced
-                failed
-                latestEthereumBlockNumber
-                entityCount
-              }
-            }
+      const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/subgraphs/name/${process.env.SUBGRAPH_NAME}`;
+      // Get status from the current subgraph
+      const query = `{
+        _meta {
+          block {
+            number
           }
-        }`;
+          hasIndexingErrors
+        }
+      }`;
 
-        const data = await graphRequest(endpoint, query);
+      const data = await graphRequest(endpoint, query);
+      const { block, hasIndexingErrors } = data._meta;
 
-        const {
-          entityCount,
-          failed,
-          synced,
-          latestEthereumBlockNumber,
-        } = data.subgraphs[0].currentVersion.deployment;
+      const ethBlock = await web3.eth.getBlock('latest');
 
-        dispatch({
-          type: ActionTypes.HEALTH_UPDATE_SERVICE,
-          meta: {
-            serviceName: 'graph',
-            state: {
-              isReachable: true,
-              entityCount,
-              isFailed: failed,
-              isSynced: synced,
-              latestEthereumBlockNumber,
-            },
+      dispatch({
+        type: ActionTypes.HEALTH_UPDATE_SERVICE,
+        meta: {
+          serviceName: 'graph',
+          state: {
+            isReachable: true,
+            isFailed: hasIndexingErrors,
+            isSynced: ethBlock.number === block.number,
+            latestEthereumBlockNumber: block.number,
           },
-        });
-      } else {
-        const endpoint = `${process.env.GRAPH_NODE_EXTERNAL}/index-node/graphql`;
-        const subgraphName = process.env.SUBGRAPH_NAME;
-
-        const query = `{
-          indexingStatusForCurrentVersion(subgraphName: "${subgraphName}") {
-            synced
-            health
-            fatalError {
-              message
-              block {
-                number
-                hash
-              }
-              handler
-            }
-            chains {
-              chainHeadBlock {
-                number
-              }
-              latestBlock {
-                number
-              }
-            }
-          }
-        }`;
-
-        const data = await graphRequest(endpoint, query);
-
-        const {
-          fatalError,
-          synced,
-          chains,
-        } = data.indexingStatusForCurrentVersion;
-
-        dispatch({
-          type: ActionTypes.HEALTH_UPDATE_SERVICE,
-          meta: {
-            serviceName: 'graph',
-            state: {
-              isReachable: true,
-              isFailed: fatalError ? true : false,
-              isSynced: synced,
-              latestEthereumBlockNumber: chains[0].latestBlock.number,
-            },
-          },
-        });
-      }
+        },
+      });
     } catch (error) {
       dispatch({
         type: ActionTypes.HEALTH_UPDATE_SERVICE,

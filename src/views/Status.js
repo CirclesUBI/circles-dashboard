@@ -4,7 +4,6 @@ import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 import Fab from '@material-ui/core/Fab';
-import GrainIcon from '@material-ui/icons/Grain';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import PaymentIcon from '@material-ui/icons/Payment';
@@ -63,11 +62,6 @@ const Status = () => {
           label={
             health.graph.isFailed ? 'Errors detected' : 'No errors detected'
           }
-        />
-
-        <Chip
-          icon={<GrainIcon />}
-          label={`${health.graph.entityCount} entities`}
         />
 
         <Chip
