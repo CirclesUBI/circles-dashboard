@@ -21,6 +21,7 @@ function checkGraphHealth() {
       const { block, hasIndexingErrors } = data._meta;
 
       const ethBlock = await web3.eth.getBlock('latest');
+      const isSynced = ethBlock.number - block.number < 4;
 
       dispatch({
         type: ActionTypes.HEALTH_UPDATE_SERVICE,
@@ -29,7 +30,7 @@ function checkGraphHealth() {
           state: {
             isReachable: true,
             isFailed: hasIndexingErrors,
-            isSynced: ethBlock.number === block.number,
+            isSynced: isSynced,
             latestEthereumBlockNumber: block.number,
           },
         },
